@@ -134,8 +134,8 @@ echo "Enabling preload service..."
 sudo systemctl enable --now preload.service
 
 # --- Plymouth ---
-echo "Installing plymouth and fade-in theme..."
-sudo pacman -S --needed --noconfirm plymouth plymouth-theme-fade-in
+echo "Installing plymouth..."
+sudo pacman -S --needed --noconfirm plymouth 
 
 echo "Setting Plymouth theme to fade-in..."
 sudo plymouth-set-default-theme -R fade-in
@@ -162,6 +162,21 @@ elif [ -f /etc/default/grub ]; then
 fi
 
 echo "Plymouth with fade-in theme is set up!"
+
+# --- Optional: Set GRUB Theme ---
+if [ -f /etc/default/grub ]; then
+    if prompt_yes_no "Do you want to set a GRUB theme?"; then
+        echo "Setting GRUB theme..."
+        # Example: Place your GRUB theme setup commands here
+        # sudo cp -r /path/to/theme /boot/grub/themes/
+        # sudo sed -i 's|^#GRUB_THEME=.*|GRUB_THEME="/boot/grub/themes/mytheme/theme.txt"|' /etc/default/grub
+        # sudo grub-mkconfig -o /boot/grub/grub.cfg
+        echo "Please add your GRUB theme setup commands in the script."
+        git clone https://github.com/ChrisTitusTech/Top-5-Bootloader-Themes
+        cd Top-5-Bootloader-Themes
+        sudo ./install.sh
+    fi
+fi
 
 # --- Fastfetch and Figlet Logo Section ---
 echo "Installing fastfetch..."
