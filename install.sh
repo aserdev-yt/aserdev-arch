@@ -89,11 +89,11 @@ if prompt_yes_no "Do you want to install a desktop environment?"; then
     read -r dm_choice
     case "$dm_choice" in
         1)
-            sudo pacman -S --noconfirm plasma sddm
+            sudo pacman -S --noconfirm plasma kde-applications sddm
             sudo systemctl enable sddm.service --force
             ;;
         2)
-            sudo pacman -S --noconfirm gnome gdm
+            sudo pacman -S --noconfirm gnome gnome-extra gdm
             sudo systemctl enable gdm.service --force
             ;;
         3)
@@ -120,7 +120,7 @@ fi
 
 # Useful CLI tools
 echo "Installing additional packages..."
-sudo pacman -S --needed --noconfirm neofetch htop ranger nmap openssh openssl rsync unzip zip tar gzip bzip2 xz p7zip ffmpeg imagemagick
+sudo pacman -S --needed --noconfirm fastfetch htop ranger nmap openssh openssl rsync unzip zip tar gzip bzip2 xz p7zip ffmpeg imagemagick vlc 
 
 # --- Preload (AUR) ---
 echo "Installing preload from AUR..."
@@ -133,35 +133,9 @@ fi
 echo "Enabling preload service..."
 sudo systemctl enable --now preload.service
 
-# --- Plymouth ---
-echo "Installing plymouth..."
-sudo pacman -S --needed --noconfirm plymouth 
-
-echo "Setting Plymouth theme to fade-in..."
-sudo plymouth-set-default-theme -R fade-in
-
-# Add plymouth to HOOKS in mkinitcpio.conf if not present
-if ! grep -q 'plymouth' /etc/mkinitcpio.conf; then
-    echo "Adding plymouth to mkinitcpio HOOKS..."
-    sudo sed -i 's/\(HOOKS=.*\)filesystems/\1plymouth filesystems/' /etc/mkinitcpio.conf
-fi
-
-echo "Regenerating initramfs..."
-sudo mkinitcpio -P
-
-# Set up Plymouth in the bootloader (systemd-boot or GRUB)
-if [ -d /boot/loader/entries ]; then
-    # systemd-boot
-    echo "Configuring systemd-boot for Plymouth..."
-    sudo sed -i 's/^\(options .*\)/\1 quiet splash/' /boot/loader/entries/*.conf
-elif [ -f /etc/default/grub ]; then
-    # GRUB
-    echo "Configuring GRUB for Plymouth..."
-    sudo sed -i 's/GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX="quiet splash /' /etc/default/grub
-    sudo grub-mkconfig -o /boot/grub/grub.cfg
-fi
-
-echo "Plymouth with fade-in theme is set up!"
+# --- Plymouth (AserDev Theme) ---
+echo "Installing AserDev Plymouth theme..."
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/aserdev-yt/aserdev-plymouth-theme/main/install-arch.sh)"
 
 # --- Optional: Set GRUB Theme ---
 if [ -f /etc/default/grub ]; then
@@ -221,5 +195,5 @@ echo "Installation completed successfully!"
 if prompt_yes_no "Reboot your system to apply changes?"; then
     sudo reboot
 else
-    echo "You can reboot your system later to apply changes."
+    echo "You can reboot your system later."
 fi
