@@ -20,8 +20,28 @@ https://wiki.archlinux.org/title/Installation_guide
 
 or use an automated script like "archinstall"
 
-``` sudo pacman -Sy archinstall ```
-``` archinstall ```
+```zsh
+sudo pacman -Sy archinstall
+```
+```zsh
+archinstall
+```
 
- 
-``` https://raw.githubusercontent.com/aserdev-yt/aserdev-arch/refs/heads/main/install.sh ```
+
+## after you finish installation 
+
+### reboot
+```zsh
+reboot
+```
+### after rebooting install curl
+
+```zsh
+sudo pacman -Syu curl --noconfirm
+```
+
+### run the installer
+
+```zsh
+ https://raw.githubusercontent.com/aserdev-yt/aserdev-arch/refs/heads/main/install.sh
+```
